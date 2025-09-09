@@ -1,31 +1,42 @@
 pipeline {
-    agent {
-        docker {
-            image 'my-jenkins-agent:latest'
-            args '-v /var/run/docker.sock:/var/run/docker.sock'
-        }
+    agent any
+
+    environment {
+        SONAR_PROJECT_KEY = 'spring-petclinic'
+        SONAR_PROJECT_NAME = 'spring-petclinic'
+        SONAR_HOST_URL    = 'http://192.168.1.2:9000'
+        SONAR_TOKEN       = 'sqp_95b5dc0d32ad1040f0931f72eba1cc9bb172f0d7'
     }
-    tools {
-        maven 'maven-3.9.11'
-    }
+
     stages {
-        stage('Build & SonarQube Analysis') {
+        stage('Maven Build & SonarQube Analysis') {
             steps {
-                sh '''
-                    mvn clean package -DskipTests verify sonar:sonar \
-                      -Dsonar.projectKey=spring-petclinic \
-                      -Dsonar.projectName="spring-petclinic" \
-                      -Dsonar.host.url=http://localhost:9000 \
-                      -Dsonar.token=sqp_157395511538db3b0b1fd36bf1ee0068ea9ef5e6
-                '''
+                sh """
+                    mvn clean package -Dmaven.test.skip=true verify \
+                    sonar:sonar \
+                    -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
+                    -Dsonar.projectName="${SONAR_PROJECT_NAME}" \
+                    -Dsonar.host.url=${SONAR_HOST_URL} \
+                    -Dsonar.token=${SONAR_TOKEN}
+                """
             }
         }
+
+        stage('Docker Compose Down') {
+            steps {
+                sh 'docker compose down -v || true'
+            }
+        }
+
         stage('Docker Compose Up') {
             steps {
-                sh '''
-                    docker-compose down || true
-                    docker-compose up -d --build
-                '''
+                sh 'docker compose up -d --build'
+            }
+        }
+
+        stage('Verify Containers') {
+            steps {
+                sh 'docker ps'
             }
         }
     }
