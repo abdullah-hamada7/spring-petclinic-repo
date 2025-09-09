@@ -5,7 +5,7 @@ pipeline {
         SONAR_PROJECT_KEY = 'spring-petclinic'
         SONAR_PROJECT_NAME = 'spring-petclinic'
         SONAR_HOST_URL    = 'http://192.168.1.2:9000'
-        SONAR_TOKEN       = 'sqp_95b5dc0d32ad1040f0931f72eba1cc9bb172f0d7'
+        SONAR_TOKEN       = 'sqp_636fa6800249dd63abfa9c05a2f712ef07e4d870'
     }
 
     stages {
