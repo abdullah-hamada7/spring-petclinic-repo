@@ -12,7 +12,7 @@ pipeline {
         stage('Maven Build & SonarQube Analysis') {
             steps {
                 sh """
-                    mvn clean package -Dmaven.test.skip=true verify \
+                    mvn clean package -Dmaven.test.skip=true verify
                     // sonar:sonar \
                     // -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
                     // -Dsonar.projectName="${SONAR_PROJECT_NAME}" \
