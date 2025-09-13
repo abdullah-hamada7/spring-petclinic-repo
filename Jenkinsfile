@@ -1,5 +1,10 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'maven:3.9.9-eclipse-temurin-17'
+            args '--network spring-petclinic-repo_default' 
+        }
+    }
 
     stages {
         stage('Maven Build') {
