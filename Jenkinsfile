@@ -14,8 +14,8 @@ pipeline {
                                                   usernameVariable: 'NEXUS_USER',
                                                   passwordVariable: 'NEXUS_PASS')]) {
                     sh """
-                        mkdir -p /home/jenkins/.m2
-                        cat > /home/jenkins/.m2/settings.xml <<EOF
+                        mkdir -p /var/jenkins_home/.m2
+                        cat > /var/jenkins_home/.m2/settings.xml <<EOF
 <settings>
   <servers>
     <server>
