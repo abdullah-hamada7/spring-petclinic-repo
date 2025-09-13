@@ -15,7 +15,7 @@ pipeline {
                                                   passwordVariable: 'NEXUS_PASS')]) {
                     sh """
                             mvn deploy -DskipTests \
-                            -DaltDeploymentRepository=nexus::default::http://localhost:8081/repository/jenkins-springpetclinic/ \
+                            -DaltDeploymentRepository=nexus::default::http://192.168.1.2:8081/repository/jenkins-springpetclinic/ \
                             -Dusername=$NEXUS_USER \
                             -Dpassword=$NEXUS_PASS
                     """
