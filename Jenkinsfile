@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker {
-            image 'maven:3.9.9-eclipse-temurin-17'
+            image 'my-jenkins-agent'
             args '--network spring-petclinic-repo_jenkins-net' 
         }
     }
