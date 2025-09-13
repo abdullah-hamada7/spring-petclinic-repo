@@ -17,7 +17,7 @@ pipeline {
                         mvn deploy:deploy-file \
                           -Durl=http://localhost:8081/repository/jenkins-springpetclinic/ \
                           -DrepositoryId=nexus \
-                          -Dfile=target/*.jar \
+                          -Dfile=target/spring-petclinic-1.0.0.jar \
                           -DgroupId=org.springframework.samples.petclinic \
                           -DartifactId=spring-petclinic \
                           -Dversion=1.0.0 \
