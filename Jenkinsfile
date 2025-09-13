@@ -14,17 +14,10 @@ pipeline {
                                                   usernameVariable: 'NEXUS_USER',
                                                   passwordVariable: 'NEXUS_PASS')]) {
                     sh """
-                        mvn deploy:deploy-file \
-                          -Durl=http://localhost:8081/repository/jenkins-springpetclinic/ \
-                          -DrepositoryId=nexus \
-                          -Dfile=target/spring-petclinic-1.0.0.jar \
-                          -DgroupId=org.springframework.samples.petclinic \
-                          -DartifactId=spring-petclinic \
-                          -Dversion=1.0.0 \
-                          -Dpackaging=jar \
-                          -DgeneratePom=true \
-                          -Dusername=$NEXUS_USER \
-                          -Dpassword=$NEXUS_PASS
+                            mvn deploy -DskipTests \
+                            -DaltDeploymentRepository=nexus::default::http://localhost:8081/repository/jenkins-springpetclinic/ \
+                            -Dusername=$NEXUS_USER \
+                            -Dpassword=$NEXUS_PASS
                     """
                 }
             }
