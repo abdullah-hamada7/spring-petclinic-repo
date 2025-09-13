@@ -14,10 +14,19 @@ pipeline {
                                                   usernameVariable: 'NEXUS_USER',
                                                   passwordVariable: 'NEXUS_PASS')]) {
                     sh """
-                            mvn deploy -DskipTests \
-                            -DaltDeploymentRepository=nexus::default::http://nexus:8081/repository/jenkins-springpetclinic/ \
-                            -Dusername=$NEXUS_USER \
-                            -Dpassword=$NEXUS_PASS
+                        mkdir -p /root/.m2
+                        cat > /root/.m2/settings.xml <<EOF
+<settings>
+  <servers>
+    <server>
+      <id>nexus</id>
+      <username>$NEXUS_USER</username>
+      <password>$NEXUS_PASS</password>
+    </server>
+  </servers>
+</settings>
+EOF
+                        mvn deploy -DskipTests
                     """
                 }
             }
