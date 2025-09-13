@@ -1,10 +1,23 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'my-jenkins-agent'
+            args '''
+                --network jenkins-net \
+                -v /var/run/docker.sock:/var/run/docker.sock \
+                -u root
+            '''
+        }
+    }
+
+    environment {
+        MAVEN_OPTS = '-Dmaven.test.skip=true'
+    }
 
     stages {
         stage('Maven Build') {
             steps {
-                sh 'mvn clean package -Dmaven.test.skip=true verify'
+                sh 'mvn clean package verify'
             }
         }
 
@@ -13,9 +26,9 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'nexus',
                                                   usernameVariable: 'NEXUS_USER',
                                                   passwordVariable: 'NEXUS_PASS')]) {
-                    sh """
+                    sh '''
                         mkdir -p $HOME/.m2
-                        cat > $HOME/.m2/settings.xml <<EOF  
+                        cat > $HOME/.m2/settings.xml <<EOF
 <settings>
   <servers>
     <server>
@@ -27,7 +40,7 @@ pipeline {
 </settings>
 EOF
                         mvn deploy -DskipTests
-                    """
+                    '''
                 }
             }
         }
