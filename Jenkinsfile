@@ -35,23 +35,5 @@ EOF
                 }
             }
         }
-
-        stage('Docker Compose Down') {
-            steps {
-                sh 'docker compose down -v || true'
-            }
-        }
-
-        stage('Docker Compose Up') {
-            steps {
-                sh 'docker compose up -d --build'
-            }
-        }
-
-        stage('Verify Containers') {
-            steps {
-                sh 'docker ps'
-            }
-        }
     }
 }

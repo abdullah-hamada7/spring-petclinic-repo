@@ -31,7 +31,7 @@ services:
 
 volumes:
   jenkins-data:
-    name: jenkins-101_jenkins-data  # <-- The exact name of your old volume
+    name: jenkins-101_jenkins-data
     external: true  
   nexus-data:
 
