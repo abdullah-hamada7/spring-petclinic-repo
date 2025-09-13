@@ -1,14 +1,5 @@
 pipeline {
-    agent {
-        docker {
-            image 'my-jenkins-agent'
-            args '''
-                --network jenkins-net \
-                -v /var/run/docker.sock:/var/run/docker.sock \
-                -u root
-            '''
-        }
-    }
+    agent any
 
     environment {
         MAVEN_OPTS = '-Dmaven.test.skip=true'
