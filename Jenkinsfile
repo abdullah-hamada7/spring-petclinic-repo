@@ -1,11 +1,5 @@
 pipeline {
-    agent {
-        docker {
-            image 'my-jenkins-agent'
-            args '--network spring-petclinic-repo_jenkins-net' 
-            args '-v /var/run/docker.sock:/var/run/docker.sock -u root'
-        }
-    }
+    agent any
 
     stages {
         stage('Maven Build') {
