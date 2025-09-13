@@ -156,11 +156,11 @@
     <distributionManagement>
     <repository>
         <id>nexus</id>
-        <url>http://nexus:8081/repository/jenkins-springpetclinic/</url>
+        <url>http://172.17.0.1:8081/repository/jenkins-springpetclinic/</url>
     </repository>
     <snapshotRepository>
         <id>nexus</id>
-        <url>http://nexus:8081/repository/jenkins-springpetclinic/</url>
+        <url>http://172.17.0.1:8081/repository/jenkins-springpetclinic/</url>
     </snapshotRepository>
 </distributionManagement>
 </project>
