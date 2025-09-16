@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Secret
 metadata:
-  name: demo-db
+  name: sec-mysql
 type: Opaque
 stringData:
   type: "mysql"

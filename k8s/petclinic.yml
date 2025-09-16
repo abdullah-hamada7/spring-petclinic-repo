@@ -55,4 +55,4 @@ spec:
           projected:
             sources:
               - secret:
-                  name: demo-db
+                  name: sec-mysql
