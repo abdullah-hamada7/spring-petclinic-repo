@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/abdullahhamada7/spring-petclinic-repo.git
+    repoURL: https://github.com/abdullah-hamada7/spring-petclinic-repo.git
     targetRevision: main
     path: k8s
   destination:
