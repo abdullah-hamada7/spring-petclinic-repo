@@ -6,9 +6,7 @@ type: Opaque
 stringData:
   username: petclinic
   password: petclinic
-
 ---
-
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -19,15 +17,15 @@ spec:
   resources:
     requests:
       storage: 1Gi
-  storageClassName: standard  # works for Minikube
-
+  storageClassName: standard
 ---
-
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: mysql
 spec:
+  serviceName: mysql        
+  replicas: 1
   selector:
     matchLabels:
       app: mysql
@@ -59,21 +57,81 @@ spec:
           volumeMounts:
             - name: mysql-data
               mountPath: /var/lib/mysql
-      volumes:
-        - name: mysql-data
-          persistentVolumeClaim:
-            claimName: mysql-pvc
-
+          args:
+            - "--default-authentication-plugin=mysql_native_password"
+  volumeClaimTemplates:         
+    - metadata:
+        name: mysql-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 1Gi
+        storageClassName: standard
 ---
-
-
 apiVersion: v1
 kind: Service
 metadata:
   name: mysql
 spec:
+  clusterIP: None
   selector:
     app: mysql
   ports:
     - port: 3306
       targetPort: 3306
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-exporter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql-exporter
+  template:
+    metadata:
+      labels:
+        app: mysql-exporter
+    spec:
+      initContainers:
+        - name: wait-for-mysql
+          image: busybox
+          command:
+            - sh
+            - -c
+            - |
+              until nc -z mysql 3306; do
+                echo "Waiting for MySQL..."
+                sleep 2
+              done
+      containers:
+        - name: exporter
+          image: prom/mysqld-exporter:v0.18.0
+          ports:
+            - containerPort: 9104
+          env:
+            - name: DATA_SOURCE_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-dsn
+                  key: DATA_SOURCE_NAME
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-exporter
+spec:
+  selector:
+    app: mysql-exporter
+  ports:
+    - port: 9104
+      targetPort: 9104
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mysql-dsn
+stringData:
+  DATA_SOURCE_NAME: "petclinic:petclinic@tcp(mysql:3306)/petclinic?tls=false"
