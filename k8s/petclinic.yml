@@ -7,35 +7,39 @@ spec:
   selector:
     matchLabels:
       app: petclinic
+  strategy: {}
   template:
     metadata:
       labels:
         app: petclinic
     spec:
-      initContainers:
-        - name: wait-for-mysql
-          image: busybox:1.36
-          command:
-            - sh
-            - -c
-            - until nc -z mysql 3306; do echo "waiting for mysql"; sleep 5; done;
       containers:
-        - name: app
-          image: docker.io/abdullahhamada7/spring-petclinic:latest
-          env:
-            - name: SPRING_PROFILES_ACTIVE
-              value: mysql
-            - name: SPRING_DATASOURCE_URL
-              value: jdbc:mysql://mysql:3306/petclinic
-            - name: SPRING_DATASOURCE_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: demo-db
-                  key: username
-            - name: SPRING_DATASOURCE_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: demo-db
-                  key: password
-          ports:
-            - containerPort: 8080
+      - env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: mysql
+        - name: SPRING_DATASOURCE_URL
+          value: jdbc:mysql://mysql:3306/petclinic
+        - name: SPRING_DATASOURCE_USERNAME
+          valueFrom:
+            secretKeyRef:
+              key: username
+              name: demo-db
+        - name: SPRING_DATASOURCE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: password
+              name: demo-db
+        image: ghcr.io/abdullah-hamada7/spring-petclinic-repo/spring-petclinic:68099a9d483dfcc2415e936b735f5b3901edc8c9
+        name: app
+        ports:
+        - containerPort: 8080
+        resources: {}
+      initContainers:
+      - command:
+        - sh
+        - -c
+        - until nc -z mysql 3306; do echo "waiting for mysql"; sleep 5; done;
+        image: busybox:1.36
+        name: wait-for-mysql
+        resources: {}
+status: {}
